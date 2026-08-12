@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examination Result Portal </title>
+<style>
+  :root{
+    --indigo-900:#1e2a5e;
+    --indigo-700:#2d3f8f;
+    --indigo-600:#3450b5;
+    --indigo-500:#4361d6;
+    --gold:#c99a2e;
+    --bg:#eef1f8;
+    --card:#ffffff;
+    --ink:#1c2233;
+    --muted:#5b6478;
+    --border:#dde2ef;
+    --green:#1a8a4a;
+    --green-bg:#e7f6ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Roboto, Arial, sans-serif;
+    background:
+      radial-gradient(1200px 500px at 50% -10%, #f4f6fc 0%, var(--bg) 60%);
+    color:var(--ink);
+    min-height:100vh;
+  }
+
+  /* Prank/demo banner */
+  .prank-banner{
+    background:repeating-linear-gradient(135deg,#b7280f,#b7280f 12px,#8f1f0b 12px,#8f1f0b 24px);
+    color:#fff;
+    text-align:center;
+    font-weight:700;
+    letter-spacing:.06em;
+    font-size:13px;
+    padding:8px 10px;
+    text-transform:uppercase;
+  }
+
+  header.site{
+    background:linear-gradient(180deg,var(--indigo-900),var(--indigo-700));
+    color:#fff;
+    padding:18px 20px;
+  }
+  .header-inner{
+    max-width:960px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .crest{
+    width:52px;height:52px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff2cc, var(--gold) 70%);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:var(--indigo-900);font-size:18px;
+    border:2px solid #f2d98a;
+    flex-shrink:0;
+  }
+  .header-text h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.01em;}
+  .header-text p{margin:2px 0 0;font-size:12.5px;color:#c9d2f4;}
+
+  .subnav{
+    background:var(--indigo-600);
+    color:#e7ebfc;
+    font-size:12.5px;
+  }
+  .subnav-inner{
+    max-width:960px;margin:0 auto;padding:8px 20px;
+    display:flex;gap:18px;flex-wrap:wrap;
+  }
+  .subnav span{opacity:.9}
+
+  main{max-width:760px;margin:0 auto;padding:34px 18px 60px;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:0 14px 34px rgba(30,42,94,.09), 0 2px 6px rgba(30,42,94,.06);
+    padding:30px 28px;
+  }
+
+  .page-title{
+    text-align:center;
+    margin-bottom:22px;
+  }
+  .page-title h2{
+    margin:0 0 4px;
+    font-size:21px;
+    color:var(--indigo-900);
+  }
+  .page-title p{
+    margin:0;
+    font-size:13.5px;
+    color:var(--muted);
+  }
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--indigo-900);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    padding:11px 13px;
+    border:1.5px solid var(--border);
+    border-radius:8px;
+    font-size:14.5px;
+    background:#fafbfe;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .field input:focus{
+    outline:none;
+    border-color:var(--indigo-500);
+    box-shadow:0 0 0 3px rgba(67,97,214,.15);
+    background:#fff;
+  }
+  .field .hint{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  .field.error input{border-color:#c0392b;}
+  .field .error-msg{
+    display:none;
+    font-size:12px;
+    color:#c0392b;
+    margin-top:4px;
+    font-weight:600;
+  }
+  .field.error .error-msg{display:block;}
+
+  .grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 16px;
+  }
+
+  .btn{
+    width:100%;
+    padding:13px 18px;
+    border:none;
+    border-radius:9px;
+    font-size:15.5px;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:.01em;
+    transition:transform .08s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,var(--indigo-500),var(--indigo-700));
+    color:#fff;
+    box-shadow:0 8px 18px rgba(67,97,214,.35);
+  }
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(67,97,214,.42);}
+  .btn-primary:active{transform:translateY(0);}
+  .btn-secondary{
+    background:#fff;
+    color:var(--indigo-700);
+    border:1.5px solid var(--indigo-500);
+  }
+  .btn-secondary:hover{background:#f3f5fd;}
+
+  .btn-row{display:flex;gap:12px;margin-top:24px;}
+  .btn-row .btn{flex:1;}
+
+  .demo-note{
+    margin-top:20px;
+    background:#fff8e6;
+    border:1px solid #f0d999;
+    border-radius:9px;
+    padding:12px 14px;
+    font-size:12.5px;
+    color:#7a5c14;
+    line-height:1.5;
+  }
+  .demo-note b{color:#5c4310;}
+
+  footer.site{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--muted);
+    padding:20px;
+  }
+
+  /* Loading overlay */
+  .loading-wrap{
+    display:none;
+    text-align:center;
+    padding:50px 10px 30px;
+  }
+  .loading-wrap.active{display:block;}
+  .spinner{
+    width:54px;height:54px;
+    margin:0 auto 22px;
+    border-radius:50%;
+    border:5px solid #dde2ef;
+    border-top-color:var(--indigo-500);
+    animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-status{
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--indigo-800,var(--indigo-700));
+    min-height:20px;
+    transition:opacity .2s ease;
+  }
+  .loading-bar-track{
+    width:100%;max-width:320px;margin:18px auto 0;
+    height:6px;border-radius:4px;background:#e3e7f5;overflow:hidden;
+  }
+  .loading-bar-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--indigo-500),var(--gold));
+    border-radius:4px;
+    transition:width .6s ease;
+  }
+
+  /* Black reveal page */
+  .black-wrap{
+    display:none;
+    position:fixed;inset:0;
+    background:#000;
+    z-index:9999;
+    cursor:pointer;
+  }
+  .black-wrap.active{display:block;}
+  .black-wrap .hint{
+    position:absolute;bottom:26px;left:0;right:0;
+    text-align:center;
+    color:#1a1a1a;
+    font-size:11px;
+    letter-spacing:.05em;
+    user-select:none;
+  }
+
+  /* Result page */
+  .result-wrap{display:none;}
+  .result-wrap.active{display:block;animation:fadeIn .4s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .search-wrap.hidden, .loading-wrap-outer.hidden{display:none;}
+
+  .result-card{max-width:820px;}
+
+  .result-header{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    border-bottom:2px solid var(--indigo-500);
+    padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:10px;
+  }
+  .result-header h2{margin:0;font-size:19px;color:var(--indigo-900);}
+  .result-header p{margin:3px 0 0;font-size:12.5px;color:var(--muted);}
+  .status-pill{
+    background:var(--green-bg);
+    color:var(--green);
+    font-weight:700;
+    font-size:12.5px;
+    padding:7px 14px;
+    border-radius:999px;
+    border:1px solid #b6e6c6;
+    white-space:nowrap;
+  }
+
+  .section-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--indigo-700);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:22px 0 10px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .info-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;
+    font-size:14px;
+  }
+  .info-grid div span.k{display:block;color:var(--muted);font-size:11.5px;margin-bottom:2px;}
+  .info-grid div span.v{font-weight:600;color:var(--ink);}
+
+  table.subjects{
+    width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px;
+  }
+  table.subjects th, table.subjects td{
+    text-align:left;padding:9px 10px;border-bottom:1px solid var(--border);
+  }
+  table.subjects th{
+    background:#f4f6fc;color:var(--indigo-700);font-size:11.5px;
+    text-transform:uppercase;letter-spacing:.04em;
+  }
+  table.subjects td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  table.subjects tr:last-child td{font-weight:700;background:#fafbff;}
+
+  .result-image-area{
+    margin-top:6px;
+    border:2px dashed var(--indigo-500);
+    border-radius:10px;
+    background:#f6f8fd;
+    min-height:calc(100vh - 220px);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;
+    padding:0;
+    text-align:center;
+    overflow:hidden;
+  }
+  .result-image-area img{
+    width:100%;
+    height:100%;
+    max-width:none;
+    max-height:none;
+    object-fit:cover;
+    border-radius:0;
+    box-shadow:none;
+    display:block;
+  }
+  .placeholder-text{color:var(--indigo-700);font-size:13px;line-height:1.6;}
+  .placeholder-text code{
+    background:#e6eaf9;padding:2px 6px;border-radius:4px;font-size:12px;
+  }
+
+  /* Fictional realistic result slip (rendered as HTML, not an image) */
+  .slip{
+    width:100%;
+    max-width:640px;
+    background:#fff;
+    border:1px solid #c9ccd6;
+    border-radius:2px;
+    padding:26px 30px 22px;
+    text-align:left;
+    font-family:"Segoe UI", Arial, sans-serif;
+    box-shadow:0 6px 22px rgba(30,42,94,.16);
+  }
+  .slip-locker{
+    display:flex;align-items:center;gap:8px;
+    font-size:12px;color:#444;margin-bottom:2px;
+  }
+  .slip-locker .lock-icon{
+    width:16px;height:16px;border-radius:3px;
+    background:#5b3fd1;color:#fff;font-size:10px;
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+  }
+  .slip-locker b{color:#5b3fd1;}
+  .slip-locker-sub{font-size:9.5px;color:#8a8a8a;margin-bottom:14px;}
+  .slip-title-row{
+    display:flex;align-items:center;gap:12px;
+    border-top:1px solid #ddd;border-bottom:2px solid #1e2a5e;
+    padding:12px 0;margin-bottom:14px;
+  }
+  .slip-emblem{
+    width:44px;height:44px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#eaf1ff,#3450b5 75%);
+    border:2px solid #1e2a5e;flex-shrink:0;
+  }
+  .slip-title-text{text-align:center;flex:1;}
+  .slip-title-text .b1{font-size:13px;font-weight:800;color:#1e2a5e;letter-spacing:.02em;}
+  .slip-title-text .b2{font-size:12px;font-weight:700;color:#1e2a5e;margin-top:2px;}
+  .slip-title-text .b3{font-size:11px;color:#555;margin-top:2px;}
+
+  .slip-fields{font-size:12px;line-height:1.9;color:#1c2233;}
+  .slip-fields .row{display:flex;}
+  .slip-fields .lbl{width:150px;font-weight:700;color:#333;flex-shrink:0;}
+  .slip-fields .val{color:#111;}
+
+  table.slip-table{
+    width:100%;border-collapse:collapse;font-size:11px;margin:16px 0 10px;
+  }
+  table.slip-table th, table.slip-table td{
+    border:1px solid #999;padding:6px 7px;text-align:left;
+  }
+  table.slip-table th{background:#f0f1f5;font-weight:700;font-size:10px;text-transform:uppercase;}
+  table.slip-table td.num{text-align:center;}
+
+  .slip-result-line{
+    font-size:12px;font-weight:700;color:#1a8a4a;
+    border:1px solid #b6e6c6;background:#e7f6ec;
+    text-align:center;padding:7px;margin-top:6px;letter-spacing:.03em;
+  }
+
+  .slip-fine-print{margin-top:16px;font-size:8.5px;color:#888;line-height:1.5;}
+  .slip-watermark{
+    text-align:center;font-size:9px;color:#aaa;margin-top:12px;
+    letter-spacing:.08em;text-transform:uppercase;
+  }
+
+  @media(max-width:560px){
+    .grid-2{grid-template-columns:1fr;}
+    .info-grid{grid-template-columns:1fr;}
+    .card{padding:22px 16px;}
+    main{padding:20px 12px 40px;}
+    .btn-row{flex-direction:column;}
+  }
+
+  @media print{
+    .prank-banner, header.site, .subnav, footer.site, .btn-row, .demo-note{display:none !important;}
+    body{background:#fff;}
+    .card{box-shadow:none;border:none;}
+  }
+</style>
+</head>
+<body>
+
+  
+
+  <header class="site">
+    <div class="header-inner">
+      <div class="crest">EX</div>
+      <div class="header-text">
+        <h1>National Examination Result Portal</h1>
+        <p>cbse-result- &nbsp;·&nbsp; CBSE,</p>
+      </div>
+    </div>
+  </header>
+  <div class="subnav">
+    <div class="subnav-inner">
+      <span>Home</span><span>Result Search</span><span>Verification</span><span>Help Desk</span><span>Contact</span>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- SEARCH PAGE -->
+    <div class="search-wrap" id="searchWrap">
+      <div class="card">
+        <div class="page-title">
+          <h2>Class XII Examination Result</h2>
+          <p>Enter your details exactly as printed on your admit card</p>
+        </div>
+
+        <form id="resultForm" novalidate>
+          <div class="field" id="f-roll">
+            <label for="roll">Roll Number</label>
+            <input type="text" id="roll" inputmode="numeric" maxlength="12" placeholder="e.g. 23736314" autocomplete="off">
+            <div class="error-msg">Please check your Roll Number.</div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field" id="f-admit">
+              <label for="admit">Admit Card ID</label>
+              <input type="text" id="admit" maxlength="15" placeholder="e.g. EY147170" autocomplete="off">
+              <div class="error-msg">Please check your Admit Card ID.</div>
+            </div>
+            <div class="field" id="f-school">
+              <label for="school">School Number</label>
+              <input type="text" id="school" inputmode="numeric" maxlength="10" placeholder="e.g. 71300" autocomplete="off">
+              <div class="error-msg">Please check your School Number.</div>
+            </div>
+          </div>
+
+          <div class="field" id="f-mother">
+            <label for="mother">Mother's Name</label>
+            <input type="text" id="mother" placeholder="As printed on admit card" autocomplete="off">
+            <div class="hint">Enter full name, no initials</div>
+            <div class="error-msg">Please check the Mother's Name entered.</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">View Result</button>
+        </form>
+
+        <div class="demo-note">
+          <b>.</b> .
+        </div>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-wrap-outer" id="loadingWrapOuter" style="display:none;">
+      <div class="card loading-wrap active">
+        <div class="spinner"></div>
+        <div class="loading-status" id="loadingStatus">Verifying details…</div>
+        <div class="loading-bar-track"><div class="loading-bar-fill" id="loadingBar"></div></div>
+      </div>
+    </div>
+
+    <!-- BLACK REVEAL PAGE -->
+    <div class="black-wrap" id="blackWrap">
+      <div class="hint">tap anywhere to go back</div>
+    </div>
+
+    <!-- RESULT PAGE -->
+    <div class="result-wrap" id="resultWrap">
+      <div class="card result-card">
+        <div class="result-header">
+          <div>
+            <h2>Class XII Examination Result — DEMO</h2>
+            <p>Session 2025–2026 &nbsp;·&nbsp; .y</p>
+          </div>
+          <div class="status-pill" id="statusPill">PASS</div>
+        </div>
+
+        <div class="result-image-area" id="resultImageArea">
+          <img src="result.png" alt="Demo Result">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="backBtn">← Back</button>
+          <button class="btn btn-primary" id="printBtn">Print Result</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site">
+    .
+  </footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // Expected demo-only values, checked entirely client-side. Never transmitted anywhere.
+  const EXPECTED = {
+    roll: "23736314",
+    admit: "EY147170",
+    school: "71300",
+    mother: "shweta chaubey"
+  };
+
+  const searchWrap = document.getElementById('searchWrap');
+  const loadingWrapOuter = document.getElementById('loadingWrapOuter');
+  const resultWrap = document.getElementById('resultWrap');
+  const form = document.getElementById('resultForm');
+  const loadingStatus = document.getElementById('loadingStatus');
+  const loadingBar = document.getElementById('loadingBar');
+
+  function clearErrors(){
+    ['f-roll','f-admit','f-school','f-mother'].forEach(id=>{
+      document.getElementById(id).classList.remove('error');
+    });
+  }
+
+  function normalize(s){
+    return (s || "").trim().toLowerCase();
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearErrors();
+
+    const roll = document.getElementById('roll').value.trim();
+    const admit = document.getElementById('admit').value.trim();
+    const school = document.getElementById('school').value.trim();
+    const mother = document.getElementById('mother').value.trim();
+
+    // Demo mode: allow any input and open the result page.
+    const rvRoll = document.getElementById('rvRoll');
+    const rvAdmit = document.getElementById('rvAdmit');
+    const rvSchool = document.getElementById('rvSchool');
+    const rvMother = document.getElementById('rvMother');
+    const rvDate = document.getElementById('rvDate');
+
+    if (rvRoll) rvRoll.textContent = roll || 'DEMO';
+    if (rvAdmit) rvAdmit.textContent = admit.toUpperCase();
+    if (rvSchool) rvSchool.textContent = school;
+    if (rvMother) rvMother.textContent = mother.replace(/\b\w/g, c => c.toUpperCase());
+    if (rvDate) rvDate.textContent = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+
+    startLoadingSequence();
+  });
+
+  function startLoadingSequence(){
+    searchWrap.style.display = 'none';
+    loadingWrapOuter.style.display = 'block';
+    loadingBar.style.width = '0%';
+
+    const steps = [
+      { text: "Verifying details…", pct: 30, delay: 0 },
+      { text: "Fetching examination record…", pct: 68, delay: 900 },
+      { text: "Generating result…", pct: 100, delay: 1800 }
+    ];
+
+    steps.forEach(step=>{
+      setTimeout(()=>{
+        loadingStatus.style.opacity = 0;
+        setTimeout(()=>{
+          loadingStatus.textContent = step.text;
+          loadingStatus.style.opacity = 1;
+          loadingBar.style.width = step.pct + '%';
+        }, 150);
+      }, step.delay);
+    });
+
+    setTimeout(()=>{
+      loadingWrapOuter.style.display = 'none';
+      resultWrap.classList.add('active');
+    }, 2600);
+  }
+
+  document.getElementById('backBtn').addEventListener('click', function(){
+    resultWrap.classList.remove('active');
+    searchWrap.style.display = 'block';
+    form.reset();
+    clearErrors();
+  });
+
+  document.getElementById('blackWrap').addEventListener('click', function(){
+    this.classList.remove('active');
+    searchWrap.style.display = 'block';
+    form.reset();
+    clearErrors();
+  });
+
+  document.getElementById('printBtn').addEventListener('click', function(){
+    window.print();
+  });
+
+})();
+</script>
+
+</body>
+</html>
